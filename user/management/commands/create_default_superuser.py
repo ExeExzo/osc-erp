@@ -16,8 +16,16 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("Superuser env vars not set"))
             return
 
-        if User.objects.filter(username=username).exists():
-            self.stdout.write(self.style.SUCCESS("Superuser already exists"))
+        existing = User.objects.filter(username=username).first()
+        if existing:
+            # ensure existing user is an admin (update role and flags)
+            existing.role = User.Role.ADMIN
+            existing.is_staff = True
+            existing.is_superuser = True
+            if email:
+                existing.email = email
+            existing.save()
+            self.stdout.write(self.style.SUCCESS("Existing user updated to superuser"))
             return
 
         # ensure role is ADMIN so User.save() will keep is_staff/is_superuser True
