@@ -1,0 +1,178 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать запрос на покупку</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'main\css\request.css' %}">
+</head>
+<body>
+    <h1>Создать запрос на покупку</h1>
+
+    <form id="purchase-form">
+        <label>РО: <input type="text" name="ro_number" required></label><br>
+        <label>Поставщик: 
+            <select name="supplier" id="supplier-select" required></select>
+        </label><br>
+
+        <label>Покупатель: 
+            <select name="customer" id="customer-select" required></select>
+        </label><br>
+        <label>Процент НДС: <input type="number" name="vat_percent" value="12"></label><br>
+        <label>Дедлайн: <input type="date" name="ddl"></label><br>
+        <label>Коммент: <input type="text" name="comment"></label><br>
+
+        <h3>Предметы</h3>
+        <div id="items-container">
+            <div class="item">
+                <label>Название: <input type="text" name="name" required></label>
+                <label>Число: <input type="number" name="quantity" value="1" required></label>
+                <label>Цена: <input type="number" name="price" value="0" required></label>
+                <button type="button" onclick="removeItem(this)">Убрать</button>
+            </div>
+        </div>
+        <button type="button" onclick="addItem()">Добавить предмет</button><br><br>
+
+        <button type="submit">Создать запрос на покупку</button>
+
+        <br><br>
+        <a href="/user/profile/">⬅ вернуться к профилю</a>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        const form = document.getElementById('purchase-form');
+        const itemsContainer = document.getElementById('items-container');
+        const message = document.getElementById('message');
+
+        function addItem() {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <label>Name: <input type="text" name="name" required></label>
+                <label>Quantity: <input type="number" name="quantity" value="1" required></label>
+                <label>Price: <input type="number" name="price" value="0" required></label>
+                <button type="button" onclick="removeItem(this)">Remove</button>
+            `;
+            itemsContainer.appendChild(div);
+        }
+
+        function removeItem(button) {
+            button.parentElement.remove();
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous message
+            message.textContent = '';
+            message.className = '';
+
+            const formData = new FormData(form);
+            const items = [];
+
+            document.querySelectorAll('#items-container .item').forEach(itemDiv => {
+                items.push({
+                    name: itemDiv.querySelector('input[name="name"]').value,
+                    quantity: parseInt(itemDiv.querySelector('input[name="quantity"]').value),
+                    price: parseFloat(itemDiv.querySelector('input[name="price"]').value),
+                });
+            });
+
+            const data = {
+                ro_number: formData.get('ro_number'),
+                supplier: parseInt(formData.get('supplier')),
+                customer: parseInt(formData.get('customer')),
+                vat_percent: parseFloat(formData.get('vat_percent')),
+                ddl: formData.get('ddl'),
+                comment: formData.get('comment'),
+                items: items
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/purchase-requests/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(data),
+                    credentials: 'include'
+                });
+
+                const json = await response.json();
+
+                if (response.ok) {
+                    message.textContent = `Purchase Request "${json.ro_number}" created successfully! ✅`;
+                    message.className = 'success';
+                    form.reset();
+                    itemsContainer.innerHTML = `<div class="item">
+                        <label>Name: <input type="text" name="name" required></label>
+                        <label>Quantity: <input type="number" name="quantity" value="1" required></label>
+                        <label>Price: <input type="number" name="price" value="0" required></label>
+                        <button type="button" onclick="removeItem(this)">Remove</button>
+                    </div>`;
+                } else {
+                    let errorText = 'Error:\n';
+                    for (const key in json) {
+                        errorText += `${key}: ${json[key].join(', ')}\n`;
+                    }
+                    message.textContent = errorText;
+                    message.className = 'error';
+                }
+            } catch (err) {
+                message.textContent = 'Unexpected error: ' + err;
+                message.className = 'error';
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function loadSuppliers() {
+            const select = document.getElementById('supplier-select');
+            const response = await fetch('http://127.0.0.1:8000/api/suppliers/');
+            const data = await response.json();
+            const suppliers = data.results || data;
+            suppliers.forEach(s => {
+                const option = document.createElement('option');
+                option.value = s.id;
+                option.textContent = s.name;
+                select.appendChild(option);
+            });
+        }
+
+        async function loadCustomers() {
+            const select = document.getElementById('customer-select');
+            const response = await fetch('http://127.0.0.1:8000/api/customers/');
+            const data = await response.json();
+            const customers = data.results || data;
+            customers.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = c.name;
+                select.appendChild(option);
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSuppliers();
+            loadCustomers();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    padding: 30px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.header {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.actions {
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-right: 6px;
+}
+
+.approve { background: #16a34a; }
+.reject  { background: #dc2626; }
+.paid    { background: #2563eb; }
+.cancel  { background: #6b7280; }

@@ -1,0 +1,158 @@
+/* Reset and body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: calc(100% - 12px);
+    padding: 6px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+h3 {
+    margin-top: 20px;
+    color: #444;
+}
+
+#items-container {
+    margin-bottom: 15px;
+}
+
+.item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.item label {
+    display: inline-block;
+    width: 30%;
+    margin-right: 5px;
+}
+
+.item input {
+    width: 60px;
+}
+
+button {
+    padding: 6px 12px;
+    margin-top: 5px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+}
+
+button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+#result {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #eaeaea;
+    padding: 15px;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+}
+
+@media (max-width: 600px) {
+    .item label {
+        display: block;
+        width: 100%;
+    }
+
+    .item input {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Message container */
+#message {
+    max-width: 800px;
+    margin: 20px auto; /* center horizontally */
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    text-align: center;
+    display: none; /* hidden by default, will show when needed */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Success message */
+#message.success {
+    display: block;
+    background-color: #d4edda; /* light green */
+    color: #155724;             /* dark green text */
+    border: 1px solid #c3e6cb;
+}
+
+/* Error message */
+#message.error {
+    display: block;
+    background-color: #f8d7da; /* light red */
+    color: #721c24;             /* dark red text */
+    border: 1px solid #f5c6cb;
+}
+
+/* Optional: fade in animation */
+#message.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#message.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.5s ease;
+}

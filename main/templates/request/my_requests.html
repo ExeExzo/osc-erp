@@ -1,0 +1,62 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans "My Purchase Requests" %}</title>
+    <link rel="stylesheet" href="{% static 'main/css/my_requests.css' %}">
+</head>
+<body>
+
+<h1>📦 {% trans "My Purchase Requests" %}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>{% trans "RO" %}</th>
+            <th>{% trans "Supplier" %}</th>
+            <th>{% trans "Customer" %}</th>
+            <th>{% trans "Amount" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th>{% trans "Created" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in requests %}
+        <tr class="status-{{ r.status|lower }}">
+            <td>{{ r.ro_number }}</td>
+            <td>{{ r.supplier }}</td>
+            <td>{{ r.customer }}</td>
+            <td>{{ r.amount_with_vat }}</td>
+            <td><b>{{ r.get_status_display }}</b></td>
+            <td>{{ r.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="6">
+                <ul>
+                    {% for item in r.items.all %}
+                        <li>
+                            {{ item.name }} — {{ item.quantity }} × {{ item.price }} = {{ item.total }}
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                {% if r.accountant_comment %}
+                    <p><b>{% trans "Accountant:" %}</b> {{ r.accountant_comment }}</p>
+                {% endif %}
+            </td>
+        </tr>
+
+        {% empty %}
+        <tr>
+            <td colspan="6">{% trans "No requests yet." %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br>
+<a href="/user/profile/">{% trans "⬅ вернуться к профилю" %}</a>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+        .card {
+            width: 420px;
+            margin: 80px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        h2 {
+            margin-bottom: 10px;
+        }
+        .role {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        a {
+            display: block;
+            margin: 10px 0;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 8px;
+            background: #0d6efd;
+            color: white;
+            text-align: center;
+        }
+        a.logout {
+            background: #dc3545;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>👤 {{ user.username }}</h2>
+    <div class="role">Роль: {{ user.role }}</div>
+
+    <!-- Everyone -->
+    <a href="/request/item/">📦 Создание запроса а покупку</a>
+
+    <a href="/my-requests/">Мои запросы</a>
+
+    <!-- Only ADMIN & ACCOUNTANT -->
+    {% if user.role == "ADMIN" or user.role == "ACCOUNTANT" %}
+        <a href="/requests/" style="background: #57ac0d;">📑 Все запросы на покупку</a>
+    {% endif %}
+
+    <a href="{% url 'account_logout' %}" class="logout">🚪 Выйти</a>
+</div>
+
+</body>
+</html>
