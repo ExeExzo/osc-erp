@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-xx_&1u502uwv%9#b)8n93gt=n%*f+y56)^qvzvi4)!+zvk&$tb
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "https://osc-erp.onrender.com"
+    "osc-erp.onrender.com"
 ]
 
 
