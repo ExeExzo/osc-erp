@@ -20,10 +20,12 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Superuser already exists"))
             return
 
+        # ensure role is ADMIN so User.save() will keep is_staff/is_superuser True
         User.objects.create_superuser(
             username=username,
             email=email,
-            password=password
+            password=password,
+            role=User.Role.ADMIN,
         )
 
         self.stdout.write(self.style.SUCCESS("Superuser created"))
