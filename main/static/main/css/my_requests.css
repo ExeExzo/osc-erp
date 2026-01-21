@@ -1,43 +1,178 @@
+/* Base styles */
 body {
     font-family: Arial, sans-serif;
     background: #f4f6f9;
-    padding: 30px;
+    padding: 20px;
+    color: #333;
+    line-height: 1.5;
 }
 
 h1 {
     margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
 }
 
+/* Table container for horizontal scroll on small screens */
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+/* Table styles */
 table {
     width: 100%;
     border-collapse: collapse;
     background: white;
     border-radius: 10px;
     overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    min-width: 600px; /* Ensures proper scroll on smaller screens */
 }
 
 th, td {
-    padding: 12px;
+    padding: 12px 15px;
     border-bottom: 1px solid #eee;
+    text-align: left;
+    word-break: break-word;
+    vertical-align: top;
 }
 
 th {
     background: #2c3e50;
     color: white;
-    text-align: left;
+    font-weight: 600;
 }
 
 tr:hover {
     background: #f8f9fa;
 }
 
-/* status colors */
+/* Status row colors */
 .status-waiting td { background: #fffbe6; }
 .status-approved td { background: #e8f7ee; }
 .status-rejected td { background: #fdecea; }
 .status-paid td { background: #e7f1ff; }
 .status-cancelled td { background: #f1f1f1; }
 
+/* Lists inside table (nested items) */
 ul {
     margin: 5px 0 5px 20px;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+/* Links */
+a {
+    display: inline-block;
+    margin-top: 15px;
+    color: #4CAF50;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    table {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    th, td {
+        padding: 10px 8px;
+    }
+
+    /* Mobile block-style table */
+    tbody, thead, table, tr, td, th {
+        display: block;
+    }
+
+    thead tr {
+        display: none;
+    }
+
+    tr {
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    td {
+        padding: 8px 10px;
+        position: relative;
+        text-align: right;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 50%;
+        font-weight: bold;
+        text-align: left;
+        color: #555;
+    }
+
+    ul {
+        margin-left: 0;
+        padding-left: 0;
+    }
+}
+
+/* Nested items responsive */
+@media (max-width: 600px) {
+    ul li {
+        display: block;
+        margin-bottom: 6px;
+        word-break: break-word;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    td::before {
+        font-size: 0.9rem;
+    }
+
+    ul li {
+        font-size: 0.9rem;
+    }
+}
+
+/* Optional: subtle card effect for each row on mobile */
+@media (max-width: 768px) {
+    tr {
+        transition: all 0.3s ease;
+    }
+
+    tr:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    }
 }

@@ -1,0 +1,67 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление адресами электронной почты</title>
+    <link rel="stylesheet" href="{% static 'main/css/email.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+
+        <h1>Управление адресами электронной почты</h1>
+
+        <!-- Menu -->
+        <div class="menu">
+            <a href="{% url 'account_email' %}">Изменить эл. почту</a>
+            <a href="{% url 'account_change_password' %}">Изменить пароль</a>
+            <a href="{% url 'socialaccount_connections' %}">Подключения аккаунта</a>
+            <a href="{% url 'account_logout' %}">Выйти</a>
+        </div>
+
+        <!-- Existing Emails -->
+        <div class="existing-emails">
+            <h3>Электронные адреса, привязанные к вашей учётной записи:</h3>
+            <ul>
+                {% for e in user.emailaddress_set.all %}
+                    <li>
+                        <span class="email">{{ e.email }}</span>
+                        {% if e.verified %}
+                            <span class="verified">Подтверждено</span>
+                        {% else %}
+                            <span class="unverified">Не подтверждено</span>
+                        {% endif %}
+                        {% if e.primary %}
+                            <span class="primary">Основной</span>
+                        {% endif %}
+                        <div class="actions">
+                            <button type="button" disabled>Сделать основным</button>
+                            <button type="button" disabled>Отправить подтверждение повторно</button>
+                            <button type="button" disabled>Удалить</button>
+                        </div>
+                    </li>
+                {% empty %}
+                    <li>Дополнительные адреса не добавлены.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Add Email Form -->
+        <div class="add-email">
+            <h3>Добавить адрес электронной почты</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <label for="id_email">Электронная почта:</label>
+                {{ form.email.errors }}
+                {{ form.email }}
+                <button type="submit">Добавить адрес</button>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <a href="/user/profile/">⬅ Назад в профиль</a>
+        </div>
+    </div>
+</body>
+</html>

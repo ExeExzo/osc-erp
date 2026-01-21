@@ -11,44 +11,59 @@
     <a href="/user/profile/">⬅ вернуться к профилю</a>
     <br>
 
-<h1>📋 Запросы на покупку</h1>
+    <h1>📋 Запросы на покупку</h1>
 
-{% for r in requests %}
-<div class="card">
+    <!-- Фильтр по статусу -->
+    <form method="get" style="margin-bottom:12px;">
+        <label for="status-select">Фильтр по статусу:</label>
+        <select id="status-select" name="status">
+            <option value="">Все</option>
+            {% for val,label in statuses %}
+                <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Применить</button>
+        {% if selected_status %}
+            <a href="{% url 'requests_list' %}" style="margin-left:8px;">Сбросить</a>
+        {% endif %}
+    </form>
 
-    <div class="header">
-        <b>РО:</b> {{ r.ro_number }} |
-        <b>Статус:</b> {{ r.status }} |
-        <b>Поставщик:</b> {{ r.supplier }} |
-        <b>Покупатель:</b> {{ r.customer }}
+    {% for r in requests %}
+    <div class="card">
+
+        <div class="header">
+            <b>РО:</b> {{ r.ro_number }} |
+            <b>Статус:</b> {{ r.status }} |
+            <b>Поставщик:</b> {{ r.supplier }} |
+            <b>Покупатель:</b> {{ r.customer }}
+        </div>
+
+        <div>
+            <b>Сумма:</b> {{ r.amount_without_vat }} → {{ r.amount_with_vat }} <br>
+            <b>Дедлайн:</b> {{ r.ddl }} <br>
+            <b>Коммент:</b> {{ r.comment }}
+        </div>
+
+        <h4>🧾 Предметы:</h4>
+        <ul>
+            {% for item in r.items.all %}
+            <li>
+                {{ item.name }} — {{ item.quantity }} x {{ item.price }} = {{ item.total }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div class="actions">
+            <a href="{% url 'change_request_status' r.id 'APPROVED' %}" class="btn approve">Одобрить</a>
+            <a href="{% url 'change_request_status' r.id 'REJECTED' %}" class="btn reject">Отклонять</a>
+            <a href="{% url 'change_request_status' r.id 'PAID' %}" class="btn paid">Оплатить</a>
+            <a href="{% url 'change_request_status' r.id 'CANCELLED' %}" class="btn cancel">Отменить</a>
+        </div>
+
     </div>
-
-    <div>
-        <b>Сумма:</b> {{ r.amount_without_vat }} → {{ r.amount_with_vat }} <br>
-        <b>Дедлайн:</b> {{ r.ddl }} <br>
-        <b>Коммент:</b> {{ r.comment }}
-    </div>
-
-    <h4>🧾 Предметы:</h4>
-    <ul>
-        {% for item in r.items.all %}
-        <li>
-            {{ item.name }} — {{ item.quantity }} x {{ item.price }} = {{ item.total }}
-        </li>
-        {% endfor %}
-    </ul>
-
-    <div class="actions">
-        <a href="{% url 'change_request_status' r.id 'APPROVED' %}" class="btn approve">Одобрить</a>
-        <a href="{% url 'change_request_status' r.id 'REJECTED' %}" class="btn reject">Отклонять</a>
-        <a href="{% url 'change_request_status' r.id 'PAID' %}" class="btn paid">Оплатить</a>
-        <a href="{% url 'change_request_status' r.id 'CANCELLED' %}" class="btn cancel">Отменить</a>
-    </div>
-
-</div>
-{% empty %}
-<p>No requests.</p>
-{% endfor %}
+    {% empty %}
+    <p>No requests.</p>
+    {% endfor %}
 
 </body>
 </html>

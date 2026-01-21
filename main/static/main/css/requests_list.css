@@ -27,9 +27,81 @@ body {
     color: white;
     text-decoration: none;
     margin-right: 6px;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .approve { background: #16a34a; }
 .reject  { background: #dc2626; }
 .paid    { background: #2563eb; }
 .cancel  { background: #6b7280; }
+
+/* Responsive Design: adjust spacing, font sizes and stack actions on smaller screens */
+
+/* Medium screens */
+@media (max-width: 1024px) {
+    body { padding: 22px; }
+    .card { padding: 14px; }
+    .header { font-size: 15px; }
+    .btn { padding: 6px 10px; margin-right: 6px; font-size: 0.95rem; }
+}
+
+/* Tablets and small laptops: stack action buttons vertically */
+@media (max-width: 768px) {
+    body { padding: 18px; }
+    .card { padding: 12px; margin-bottom: 16px; }
+    .header { font-size: 14px; }
+
+    /* Actions become a vertical column for easier tapping */
+    .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        text-align: center;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+}
+
+/* Mobile phones: tighter layout and larger tappable buttons */
+@media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
+    .card {
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .header {
+        font-size: 13px;
+        margin-bottom: 6px;
+        word-break: break-word;
+    }
+
+    .btn {
+        padding: 12px 10px;
+        font-size: 0.95rem;
+    }
+
+    /* Reduce horizontal overflow for long lines */
+    .header, .card > div, .actions, ul {
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* Optional: very small devices */
+@media (max-width: 360px) {
+    .btn { font-size: 0.92rem; padding: 10px; }
+    .header { font-size: 12.5px; }
+}

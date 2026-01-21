@@ -34,7 +34,8 @@ class PurchaseRequestViewSet(viewsets.ModelViewSet):
 @login_required
 @admin_or_accountant_required
 def requests_list_view(request):
-    allowed_statuses = [
+    # статусы, которые доступны для фильтрации
+    filter_values = [
         PurchaseRequest.Status.WAITING,
         PurchaseRequest.Status.APPROVED,
         PurchaseRequest.Status.REJECTED,
@@ -42,19 +43,33 @@ def requests_list_view(request):
         PurchaseRequest.Status.CANCELLED,
     ]
 
-    requests = PurchaseRequest.objects.annotate(
-    sort_order=Case(
-        When(status=PurchaseRequest.Status.WAITING, then=1),
-        When(status=PurchaseRequest.Status.APPROVED, then=2),
-        When(status=PurchaseRequest.Status.PAID, then=3),
-        When(status=PurchaseRequest.Status.REJECTED, then=4),
-        When(status=PurchaseRequest.Status.CANCELLED, then=5),
-        default=99,
-        output_field=IntegerField()
-    )
-).order_by("sort_order", "-created_at")
+    # базовый queryset с сортировкой (оставляем аннотацию сортировки)
+    requests_qs = PurchaseRequest.objects.annotate(
+        sort_order=Case(
+            When(status=PurchaseRequest.Status.WAITING, then=1),
+            When(status=PurchaseRequest.Status.APPROVED, then=2),
+            When(status=PurchaseRequest.Status.PAID, then=3),
+            When(status=PurchaseRequest.Status.REJECTED, then=4),
+            When(status=PurchaseRequest.Status.CANCELLED, then=5),
+            default=99,
+            output_field=IntegerField()
+        )
+    ).order_by("sort_order", "-created_at")
 
-    return render(request, "request/requests_list.html", {"requests": requests})
+    # применить фильтр по GET-параметру ?status=...
+    selected_status = request.GET.get("status", "")
+    if selected_status in filter_values:
+        requests_qs = requests_qs.filter(status=selected_status)
+
+    # передать в шаблон варианты фильтра (значение, метка)
+    # используем только те варианты, которые входят в filter_values
+    status_choices = [c for c in PurchaseRequest.Status.choices if c[0] in filter_values]
+
+    return render(request, "request/requests_list.html", {
+        "requests": requests_qs,
+        "statuses": status_choices,
+        "selected_status": selected_status,
+    })
 
 
 @admin_or_accountant_required
