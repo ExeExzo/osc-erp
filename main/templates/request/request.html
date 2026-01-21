@@ -91,7 +91,7 @@
             };
 
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/purchase-requests/', {
+                const response = await fetch('/api/purchase-requests/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -145,7 +145,7 @@
 
         async function loadSuppliers() {
             const select = document.getElementById('supplier-select');
-            const response = await fetch('http://127.0.0.1:8000/api/suppliers/');
+            const response = await fetch('/api/suppliers/');
             const data = await response.json();
             const suppliers = data.results || data;
             suppliers.forEach(s => {
@@ -158,7 +158,7 @@
 
         async function loadCustomers() {
             const select = document.getElementById('customer-select');
-            const response = await fetch('http://127.0.0.1:8000/api/customers/');
+            const response = await fetch('/api/customers/');
             const data = await response.json();
             const customers = data.results || data;
             customers.forEach(c => {
