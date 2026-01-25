@@ -6,14 +6,45 @@
     <title>Создать запрос на покупку</title>
     <link rel="stylesheet" type="text/css" href="{% static 'main\css\request.css' %}">
 </head>
+<div id="supplier-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h2>➕ Новый поставщик</h2>
+
+        <label>Название</label>
+        <input type="text" id="new-supplier-name" placeholder="Samsung" />
+
+        <label>BIN / IIN</label>
+        <input type="text" id="new-supplier-bin" placeholder="123456789012" />
+
+        <label>Телефон</label>
+        <input type="text" id="new-supplier-phone" placeholder="+7 777 777 77 77" />
+
+        <label>Email</label>
+        <input type="email" id="new-supplier-email" placeholder="test@mail.com" />
+
+        <label>Банковские реквизиты</label>
+        <textarea id="new-supplier-bank" placeholder="Kaspi, KZ00...."></textarea>
+
+        <div class="modal-actions">
+            <button onclick="createSupplier()" class="btn-green">Создать</button>
+            <button onclick="closeSupplierModal()" class="btn-gray">Отмена</button>
+        </div>
+
+        <div id="supplier-modal-msg"></div>
+    </div>
+</div>
 <body>
     <h1>Создать запрос на покупку</h1>
 
     <form id="purchase-form">
         <label>РО: <input type="text" name="ro_number" required></label><br>
-        <label>Поставщик: 
+        <label>Поставщик:</label>
+
+        <div class="supplier-row">
             <select name="supplier" id="supplier-select" required></select>
-        </label><br>
+            <button type="button" class="mini-btn" onclick="openSupplierModal()">＋</button>
+        </div>
+
 
         <label>Покупатель: 
             <select name="customer" id="customer-select" required></select>
@@ -173,6 +204,72 @@
             loadSuppliers();
             loadCustomers();
         });
+
+        function openSupplierModal() {
+            document.getElementById("supplier-modal").style.display = "flex";
+        }
+
+        function closeSupplierModal() {
+            document.getElementById("supplier-modal").style.display = "none";
+
+            ["new-supplier-name","new-supplier-bin","new-supplier-phone","new-supplier-email","new-supplier-bank"]
+                .forEach(id => document.getElementById(id).value = "");
+
+            document.getElementById("supplier-modal-msg").textContent = "";
+        }
+
+        async function createSupplier() {
+            const msg = document.getElementById("supplier-modal-msg");
+
+            const data = {
+                name: document.getElementById("new-supplier-name").value.trim(),
+                bin_iin: document.getElementById("new-supplier-bin").value.trim(),
+                phone: document.getElementById("new-supplier-phone").value.trim(),
+                email: document.getElementById("new-supplier-email").value.trim(),
+                bank_details: document.getElementById("new-supplier-bank").value.trim(),
+            };
+
+            if (!data.name) {
+                msg.textContent = "Название обязательно";
+                msg.style.color = "red";
+                return;
+            }
+
+            try {
+                const res = await fetch("/create/supplier/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (res.ok) {
+                    const select = document.getElementById("supplier-select");
+
+                    const option = document.createElement("option");
+                    option.value = result.id;
+                    option.textContent = result.name;
+                    option.selected = true;
+                    select.appendChild(option);
+
+                    msg.textContent = "✅ Поставщик создан";
+                    msg.style.color = "green";
+
+                    setTimeout(closeSupplierModal, 700);
+                } else {
+                    msg.textContent = JSON.stringify(result);
+                    msg.style.color = "red";
+                }
+
+            } catch (e) {
+                msg.textContent = "Ошибка сервера";
+                msg.style.color = "red";
+            }
+        }
     </script>
 </body>
 </html>

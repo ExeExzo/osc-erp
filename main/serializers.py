@@ -49,9 +49,9 @@ class PurchaseRequestSerializer(serializers.ModelSerializer):
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
-        fields = ['id', 'name']
+        fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'name']
+        fields = '__all__'

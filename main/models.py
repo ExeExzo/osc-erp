@@ -32,8 +32,6 @@ class PurchaseRequest(models.Model):
 
     class Status(models.TextChoices):
         WAITING = 'WAITING', _('Waiting for review')
-        APPROVED = 'APPROVED', _('Approved')
-        REJECTED = 'REJECTED', _('Rejected')
         PAID = 'PAID', _('Paid')
         CANCELLED = 'CANCELLED', _('Cancelled')
 

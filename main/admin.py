@@ -105,19 +105,16 @@ class PurchaseRequestAdmin(admin.ModelAdmin):
         }),
     )
 
-    actions = ["mark_as_approved", "mark_as_rejected", "mark_as_paid"]
+    actions = ["mark_as_paid"]
 
     # --------------------
     # ADMIN ACTIONS
     # --------------------
-    @admin.action(description="✅ Одобрить")
-    def mark_as_approved(self, request, queryset):
-        queryset.update(status=PurchaseRequest.Status.APPROVED)
-
-    @admin.action(description="❌ Отклонить")
-    def mark_as_rejected(self, request, queryset):
-        queryset.update(status=PurchaseRequest.Status.REJECTED)
 
     @admin.action(description="💰 Отметить как оплачено")
     def mark_as_paid(self, request, queryset):
         queryset.update(status=PurchaseRequest.Status.PAID)
+
+    @admin.action(description="❌ Отменить заказ")
+    def mark_as_cancelled(self, request, queryset):
+        queryset.update(status=PurchaseRequest.Status.CANCELLED)

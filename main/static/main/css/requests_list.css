@@ -1,107 +1,163 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     background: #f4f6f8;
-    padding: 30px;
+    padding: 25px;
 }
 
-.card {
+h1 {
+    margin: 15px 0;
+}
+
+.filter-form {
+    margin-bottom: 15px;
+}
+
+.table-wrap {
     background: white;
-    padding: 15px;
     border-radius: 10px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    overflow: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.header {
-    font-size: 16px;
-    margin-bottom: 8px;
+.excel-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1100px;
+}
+
+.excel-table th {
+    background: #1f2933;
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    position: sticky;
+    top: 0;
+    text-align: left;
+}
+
+.excel-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 13.5px;
+    vertical-align: top;
+}
+
+.excel-table tr:hover {
+    background: #f8fafc;
+}
+
+.comment {
+    max-width: 200px;
+}
+
+.items div {
+    font-size: 12.5px;
+    margin-bottom: 3px;
+}
+
+.actions-col {
+    text-align: center;
 }
 
 .actions {
-    margin-top: 10px;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn {
-    padding: 6px 12px;
-    border-radius: 6px;
+    padding: 5px 10px;
+    border-radius: 5px;
     color: white;
+    font-size: 12px;
     text-decoration: none;
-    margin-right: 6px;
-    display: inline-block;
     white-space: nowrap;
 }
 
-.approve { background: #16a34a; }
-.reject  { background: #dc2626; }
-.paid    { background: #2563eb; }
-.cancel  { background: #6b7280; }
+.paid { background: green; }
+.cancel { background: red; }
 
-/* Responsive Design: adjust spacing, font sizes and stack actions on smaller screens */
-
-/* Medium screens */
-@media (max-width: 1024px) {
-    body { padding: 22px; }
-    .card { padding: 14px; }
-    .header { font-size: 15px; }
-    .btn { padding: 6px 10px; margin-right: 6px; font-size: 0.95rem; }
+.status {
+    padding: 3px 7px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
-/* Tablets and small laptops: stack action buttons vertically */
+.status.waiting { background: #fff7cc; }
+.status.approved { background: #dcfce7; color: #166534; }
+.status.rejected { background: #fee2e2; color: #991b1b; }
+.status.paid { background: green; color: white; }
+.status.cancelled { background: red;  color: white;}
+
+/* Mobile */
 @media (max-width: 768px) {
-    body { padding: 18px; }
-    .card { padding: 12px; margin-bottom: 16px; }
-    .header { font-size: 14px; }
-
-    /* Actions become a vertical column for easier tapping */
-    .actions {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 12px;
-    }
-
-    .btn {
-        display: block;
-        width: 100%;
-        margin-right: 0;
-        text-align: center;
-        padding: 10px;
-        box-sizing: border-box;
-    }
+    body { padding: 12px; }
+    .excel-table { font-size: 12px; }
 }
 
-/* Mobile phones: tighter layout and larger tappable buttons */
-@media (max-width: 480px) {
-    body {
-        padding: 12px;
-    }
 
-    .card {
-        padding: 12px;
-        border-radius: 8px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-    }
+/* =========================
+   Button animations
+========================= */
 
-    .header {
-        font-size: 13px;
-        margin-bottom: 6px;
-        word-break: break-word;
-    }
-
-    .btn {
-        padding: 12px 10px;
-        font-size: 0.95rem;
-    }
-
-    /* Reduce horizontal overflow for long lines */
-    .header, .card > div, .actions, ul {
-        word-break: break-word;
-        overflow-wrap: anywhere;
-    }
+.btn {
+    position: relative;
+    overflow: hidden;
+    transition: 
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        filter 0.15s ease;
 }
 
-/* Optional: very small devices */
-@media (max-width: 360px) {
-    .btn { font-size: 0.92rem; padding: 10px; }
-    .header { font-size: 12.5px; }
+/* Hover */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    filter: brightness(1.05);
+}
+
+/* Click / press */
+.btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+}
+
+/* Glow by type */
+.paid:hover {
+    box-shadow: 0 0 0 3px rgba(0,128,0,0.25), 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.cancel:hover {
+    box-shadow: 0 0 0 3px rgba(220,38,38,0.25), 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* =========================
+   Click loading animation
+========================= */
+
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+    transform: scale(0.96);
+}
+
+.btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.6);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
 }

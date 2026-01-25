@@ -37,8 +37,6 @@ def requests_list_view(request):
     # статусы, которые доступны для фильтрации
     filter_values = [
         PurchaseRequest.Status.WAITING,
-        PurchaseRequest.Status.APPROVED,
-        PurchaseRequest.Status.REJECTED,
         PurchaseRequest.Status.PAID,
         PurchaseRequest.Status.CANCELLED,
     ]
@@ -47,9 +45,7 @@ def requests_list_view(request):
     requests_qs = PurchaseRequest.objects.annotate(
         sort_order=Case(
             When(status=PurchaseRequest.Status.WAITING, then=1),
-            When(status=PurchaseRequest.Status.APPROVED, then=2),
             When(status=PurchaseRequest.Status.PAID, then=3),
-            When(status=PurchaseRequest.Status.REJECTED, then=4),
             When(status=PurchaseRequest.Status.CANCELLED, then=5),
             default=99,
             output_field=IntegerField()
@@ -77,8 +73,6 @@ def change_request_status(request, pk, status):
     pr = get_object_or_404(PurchaseRequest, pk=pk)
 
     allowed_statuses = [
-        PurchaseRequest.Status.APPROVED,
-        PurchaseRequest.Status.REJECTED,
         PurchaseRequest.Status.PAID,
         PurchaseRequest.Status.CANCELLED,
     ]
@@ -91,6 +85,12 @@ def change_request_status(request, pk, status):
     pr.save()
 
     return redirect("requests_list")
+
+
+class CreateSupplierViewSet(viewsets.ModelViewSet):
+    queryset = Supplier.objects.all()
+    serializer_class = SupplierSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class SupplierViewSet(viewsets.ReadOnlyModelViewSet):

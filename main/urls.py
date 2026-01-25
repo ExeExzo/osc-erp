@@ -18,5 +18,5 @@ urlpatterns = [
     path("requests/<int:pk>/status/<str:status>/", views.change_request_status, name="change_request_status"),
     path("my-requests/", views.my_requests_view, name="my_requests"),
 
-
+    path("create/supplier/", views.CreateSupplierViewSet.as_view({'post': 'create'}), name="create_supplier"),
 ]
